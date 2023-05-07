@@ -61,6 +61,7 @@ module.exports = {
         try {
             await targetUser.kick(reason);
             await interaction.editReply(`User ${targetUser} was kicked\nReason: ${reason}`);
+            await targetUser.send(`You were kicked from ${interaction.guild.name}\nReason: ${reason}`);
         } catch (error) {
             console.log(`There was an error when banning: ${error}.`);
         }
