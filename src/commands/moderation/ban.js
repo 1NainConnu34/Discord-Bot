@@ -61,6 +61,7 @@ module.exports = {
         try {
             await targetUser.ban({ reason });
             await interaction.editReply(`User ${targetUser} was banned\nReason: ${reason}`);
+            await targetUser.send(`You were banned from ${interaction.guild.name}\nReason: ${reason}`);
         } catch (error) {
             console.log(`There was an error when banning: ${error}.`);
         }
