@@ -3,7 +3,7 @@ const client_button = require('../../index.js');
 
 const info_game = [];
 
-function create_tictactoe_game() {
+function create_game() {
     return [['.', '.', '.'], ['.', '.', '.'], ['.', '.', '.']];
 }
 
@@ -74,31 +74,62 @@ function pushInfoMorpion(interaction) {
 }
 
 function create_buttons(index_morp) {
+    let blank = "<:Blank:1097122236818800661>";
+    let emojiX = "❌";
+    let emojiO = "⭕";
+    let goodEmoji = blank;
     const row = new ActionRowBuilder()
         for (let j = 0; j < 3; j++) {
+            if (info_game[index_morp].game[0][j] == ".") {
+                goodEmoji = blank;
+            }
+            if (info_game[index_morp].game[0][j] == "X") {
+                goodEmoji = emojiX;
+            }
+            if (info_game[index_morp].game[0][j] == "O") {
+                goodEmoji = emojiO;
+            }
             row.addComponents(
                 button = new ButtonBuilder()
                     .setCustomId('button 0 ' + j + ' ' + info_game[index_morp].message_id)
-                    .setLabel(info_game[index_morp].game[0][j])
-                    .setStyle(ButtonStyle.Primary),
+                    .setStyle(ButtonStyle.Primary)
+                    .setEmoji(goodEmoji),
             );
         }
     const row2 = new ActionRowBuilder()
         for (let j = 0; j < 3; j++) {
+            if (info_game[index_morp].game[1][j] == ".") {
+                goodEmoji = blank;
+            }
+            if (info_game[index_morp].game[1][j] == "X") {
+                goodEmoji = emojiX;
+            }
+            if (info_game[index_morp].game[1][j] == "O") {
+                goodEmoji = emojiO;
+            }
             row2.addComponents(
                 button = new ButtonBuilder()
                     .setCustomId('button 1 ' + j + ' ' + info_game[index_morp].message_id)
-                    .setLabel(info_game[index_morp].game[1][j])
-                    .setStyle(ButtonStyle.Primary),
+                    .setStyle(ButtonStyle.Primary)
+                    .setEmoji(goodEmoji),
             );
         }
     const row3 = new ActionRowBuilder()
         for (let j = 0; j < 3; j++) {
+            if (info_game[index_morp].game[2][j] == ".") {
+                goodEmoji = blank;
+            }
+            if (info_game[index_morp].game[2][j] == "X") {
+                goodEmoji = emojiX;
+            }
+            if (info_game[index_morp].game[2][j] == "O") {
+                goodEmoji = emojiO;
+            }
             row3.addComponents(
                 button = new ButtonBuilder()
                     .setCustomId('button 2 ' + j + ' ' + info_game[index_morp].message_id)
-                    .setLabel(info_game[index_morp].game[2][j])
-                    .setStyle(ButtonStyle.Primary),
+                    .setStyle(ButtonStyle.Primary)
+                    .setEmoji(goodEmoji),
             );
         }
     info_game[index_morp].buttons = [row, row2, row3];
@@ -108,16 +139,16 @@ function modify_game(interaction, index_morp) {
     for (let i = 0; i < 3; i++) {
         for (let j = 0; j < 3; j++) {
             if (info_game[index_morp].buttons[i].components[j].data.custom_id == interaction.customId) {
-                if (info_game[index_morp].buttons[i].components[j].data.label != ".")
+                if (info_game[index_morp].buttons[i].components[j].data.emoji.name != "Blank")
                     return "NOT EMPTY";
                 if (info_game[index_morp].player1_id == info_game[index_morp].turn) {
-                    info_game[index_morp].buttons[i].components[j].data.label = "X";
+                    info_game[index_morp].buttons[i].components[j].setEmoji("❌");
                     info_game[index_morp].game[i][j] = "X";
                     info_game[index_morp].turn = info_game[index_morp].player2_id;
                     return "GOOD";
                 }
                 else {
-                    info_game[index_morp].buttons[i].components[j].data.label = "O";
+                    info_game[index_morp].buttons[i].components[j].setEmoji("⭕");
                     info_game[index_morp].game[i][j] = "O";
                     info_game[index_morp].turn = info_game[index_morp].player1_id;
                     return "GOOD";
@@ -194,11 +225,11 @@ client_button.on('interactionCreate', async (interaction) => {
         }
         if (index_morp != -1 && info_game[index_morp].buttons == "none") {
             info_game[index_morp].player2_id = interaction.user.id;
-            info_game[index_morp].game = create_tictactoe_game();
+            info_game[index_morp].game = create_game();
             console.log('Donnée joueur 2 stocké');
             create_buttons(index_morp);
             console.log("Boutons initialisé");
-            await interaction.update({ content: "It's " + '<@' + info_game[index_morp].turn + '> turn ( X )', components: info_game[index_morp].buttons })
+            await interaction.update({ content: "It's " + '<@' + info_game[index_morp].turn + '> turn ( ❌ )', components: info_game[index_morp].buttons })
             return;
         }
         if (index_morp != -1 && info_game[index_morp].buttons != "none") {
@@ -229,11 +260,11 @@ client_button.on('interactionCreate', async (interaction) => {
                     return;
                 }
                 if (info_game[index_morp].turn == info_game[index_morp].player1_id) {
-                    await interaction.update({ content: "It's " + '<@' + info_game[index_morp].turn + '> turn ( X )', components: info_game[index_morp].buttons })
+                    await interaction.update({ content: `It's <@${info_game[index_morp].turn}> turn ( ❌ )`, components: info_game[index_morp].buttons })
                     return;
                 }
                 if (info_game[index_morp].turn == info_game[index_morp].player2_id) {
-                    await interaction.update({ content: "It's " + '<@' + info_game[index_morp].turn + '> turn ( O )', components: info_game[index_morp].buttons })
+                    await interaction.update({ content: `It's <@${info_game[index_morp].turn}> turn ( ⭕ )`, components: info_game[index_morp].buttons })
                     return;
                 }
             }
