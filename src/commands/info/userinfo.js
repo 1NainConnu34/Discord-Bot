@@ -1,12 +1,4 @@
 const { Client, Interaction, ApplicationCommandOptionType, EmbedBuilder } = require("discord.js");
-const client = require('../../index.js');
-const moment = require('moment');
-
-function toDate (unixTimestamp) {  
-    return new Date(
-      unixTimestamp * 1000
-    )
-  }
 
 module.exports = {
     name: "userinfo",
@@ -35,8 +27,8 @@ module.exports = {
         const targetUser = await interaction.guild.members.fetch((targetUserId != null ? targetUserId : interaction.user.id));
         const guild = client.guilds.cache.get(interaction.guild.id);
         const member = guild.members.cache.get((targetUserId != null ? targetUserId : interaction.user.id))
-        let text_roles = "";
-        let nb_roles = 0;
+        let textRoles = "";
+        let nbRoles = 0;
 
         if (!targetUser) {
             await interaction.editReply("That user doesn't exist in this server.");
@@ -48,10 +40,10 @@ module.exports = {
             role = role.concat(member._roles[i]);
             role = role.concat("> ");
             if (i != 0) {
-                text_roles = text_roles.concat(" ");
+                textRoles = textRoles.concat(" ");
             }
-            text_roles = text_roles.concat(role);
-            nb_roles++;
+            textRoles = textRoles.concat(role);
+            nbRoles++;
         }
         const embedInfo = new EmbedBuilder()
             .setColor(0x0099FF)
@@ -63,7 +55,7 @@ module.exports = {
                 { name: 'Account creation', value: `<t:${Math.floor(member.user.createdTimestamp / 1000)}:f>`, inline: true },
                 { name: 'Join date', value: `<t:${Math.floor(member.joinedTimestamp / 1000)}:f>`, inline: true },
             )
-            .addFields({ name: `Roles (${nb_roles})`, value: text_roles })
+            .addFields({ name: `Roles (${nbRoles})`, value: textRoles })
             .setTimestamp()
             .setFooter({ text: client.user.username, iconURL: client.user.avatarURL() });
         interaction.editReply({embeds: [embedInfo]});
