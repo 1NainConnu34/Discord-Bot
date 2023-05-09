@@ -9,7 +9,7 @@ module.exports = {
             name: "user",
             description: "The user you want to kick",
             required: true,
-            type: ApplicationCommandOptionType.Mentionable,
+            type: ApplicationCommandOptionType.User,
         },
         {
             name: "reason",
@@ -29,10 +29,16 @@ module.exports = {
     callback: async (client, interaction) => {
         const targetUserId = interaction.options.get("user").value;
         const reason = interaction.options.get("reason")?.value || "No reason provided";
+        let targetUser = null;
 
         await interaction.deferReply();
 
-        const targetUser = await interaction.guild.members.fetch(targetUserId);
+        try {
+            targetUser = await interaction.guild.members.fetch(targetUserId);
+        } catch (error) {
+            await interaction.editReply(`Can't kick`);
+            return;
+        }
 
         if (!targetUser) {
             await interaction.editReply("That user doesn't exist in this server.");
@@ -63,7 +69,8 @@ module.exports = {
             await interaction.editReply(`User ${targetUser} was kicked\nReason: ${reason}`);
             await targetUser.send(`You were kicked from ${interaction.guild.name}\nReason: ${reason}`);
         } catch (error) {
-            console.log(`There was an error when banning: ${error}.`);
+            console.log(`There was an error when kicking: ${error}.`);
+            await interaction.editReply(`Can't kick`);
         }
     },
 };
