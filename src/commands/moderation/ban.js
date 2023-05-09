@@ -2,14 +2,14 @@ const { Client, Interaction, ApplicationCommandOptionType, PermissionFlagsBits }
 
 module.exports = {
     name: "ban",
-    description: "Bans a user from this server",
+    description: "Ban a user from this server",
 
     options: [
         {
             name: "user",
             description: "The user you want to ban",
             required: true,
-            type: ApplicationCommandOptionType.Mentionable,
+            type: ApplicationCommandOptionType.User,
         },
         {
             name: "reason",
@@ -29,10 +29,16 @@ module.exports = {
     callback: async (client, interaction) => {
         const targetUserId = interaction.options.get("user").value;
         const reason = interaction.options.get("reason")?.value || "No reason provided";
+        let targetUser = null;
 
         await interaction.deferReply();
 
-        const targetUser = await interaction.guild.members.fetch(targetUserId);
+        try {
+            targetUser = await interaction.guild.members.fetch(targetUserId);
+        } catch (error) {
+            await interaction.editReply(`Can't ban`);
+            return;
+        }
 
         if (!targetUser) {
             await interaction.editReply("That user doesn't exist in this server.");
@@ -60,10 +66,11 @@ module.exports = {
 
         try {
             await targetUser.ban({ reason });
-            await interaction.editReply(`User ${targetUser} was banned\nReason: ${reason}`);
+            await interaction.editReply(`User ${targetUser} (${targetUserId}) was banned\nReason: ${reason}`);
             await targetUser.send(`You were banned from ${interaction.guild.name}\nReason: ${reason}`);
         } catch (error) {
             console.log(`There was an error when banning: ${error}.`);
+            await interaction.editReply(`Can't ban`);
         }
     },
 };
