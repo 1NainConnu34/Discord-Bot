@@ -13,7 +13,7 @@ git@github.com:1NainConnu34/Discord-Bot.git
 npm i discord.js
 ```
 
-3. Create a .env file with a variable named "TOKEN" and the token of your bot
+3. Create a .env file with a variable named "TOKEN" and the token of your bot and a variable named "INVITE" with a link to invite your bot
 
 4. You can now start the bot using this command
 
