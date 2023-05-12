@@ -1,4 +1,4 @@
-const { Client, Interaction, ApplicationCommandOptionType, EmbedBuilder, PermissionFlagsBits } = require("discord.js");
+const { Client, Interaction, ApplicationCommandOptionType, PermissionFlagsBits } = require("discord.js");
 
 module.exports = {
     name: "rename",

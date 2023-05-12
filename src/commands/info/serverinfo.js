@@ -1,4 +1,4 @@
-const { Client, Interaction, ApplicationCommandOptionType, EmbedBuilder, VoiceChannel } = require("discord.js");
+const { Client, Interaction, EmbedBuilder } = require("discord.js");
 
 module.exports = {
     name: "serverinfo",
